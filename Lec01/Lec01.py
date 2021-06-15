@@ -27,32 +27,38 @@ boundaries =\
 
 dt = 0.00001  # time step
 
-start_vec = vector(0, -ylen/2+1, 0)  # starting position vector of proton
-
 
 # Create class for proton
 class Proton:
-    def __init__(self, start):  # v is a vector representing velocity
+    def __init__(self):  # v is a vector representing velocity
 
-        # velocity
-        self.start_vec = start
-        self.v_mag = 20
-        self.q = 0.5  # charge of proton in arbitrary units
-        self.b_mag = 5  # strength of magnetic field
+        # starting position vector of proton
+        self.start_vec = vector(0, -ylen/2+1, 0)
         self.theta = pi/4  # angle of launch of proton
 
+        self.q = 0.5  # charge of proton in arbitrary units
+
+        self.v_mag = 20  # # velocity magnitude
+        self.e_mag = 5  # strength of electric field
+        self.b_mag = 5  # strength of magnetic field
+
+        # Vectors
         self.v_vec = vector(
             self.v_mag*cos(self.theta), self.v_mag*sin(self.theta), 0)
         self.b_vec = vector(0, -self.b_mag, 0)
+        self.e_vec = vector(0, self.e_mag, 0)
 
         self.proton = sphere(
-            pos=start, color=color.red,
-            radius=1, make_trail=True, trail_type="curve")
+            pos=self.start_vec, color=color.blue,
+            radius=0.6, make_trail=True, trail_type="curve")
         self.a = vector(0, 0, 0)
 
     def move(self):  # moves proton by small step
-        self.a = self.q * cross(self.v_vec, self.b_vec)  # F = ma = q v x B
+        # electric + magnetic field forces F = ma = q E + q v x B
+        self.a = self.q * self.e_vec + self.q * cross(self.v_vec, self.b_vec)
+
         self.v_vec += self.a * dt  # a = dv/dt
+
         self.proton.pos += self.v_vec * dt  # v = dx/dt
 
     def reset_proton(self):  # resets proton position and path
@@ -84,6 +90,12 @@ def adjustBfield():
     BfieldSliderReadout.text = f"{BfieldSlider.value} Tesla"
 
 
+def adjustEfield():
+    proton.e_mag = EfieldSlider.value
+    proton.e_vec = vector(0, EfieldSlider.value, 0)  # B directed downwards
+    EfieldSliderReadout.text = f"{EfieldSlider.value} V"
+
+
 def adjustQ():
     proton.q = QSlider.value
     QSliderReadout.text = f"{QSlider.value} Coulumbs"
@@ -95,18 +107,23 @@ def adjustAngle():
     proton.v_vec = vector(
         proton.v_mag*cos(theta), proton.v_mag * sin(theta), 0)
     angleSliderReadout.text = f"{angleSlider.value} degrees"
-    # proton.v = vector(v_mag*cos(theta), v_mag*sin(theta), 0)
 
 
-proton = Proton(start_vec)  # creates the 'proton' object
+proton = Proton()  # creates the 'proton' object
 
 button(text="Launch!", bind=launch)  # link the button and function
 
 scene.append_to_caption("\n\n")  # newlines for aesthetics
 BfieldSlider = slider(
-    min=0, max=10, step=.5, value=5, bind=adjustBfield)
+    min=0, max=25, step=0.5, value=5, bind=adjustBfield)
 scene.append_to_caption(" B-field Strength = ")
 BfieldSliderReadout = wtext(text="5 Tesla")
+
+scene.append_to_caption("\n\n")  # newlines for aesthetics
+EfieldSlider = slider(
+    min=0, max=10000, step=50, value=0, bind=adjustEfield)
+scene.append_to_caption(" E-field Strength = ")
+EfieldSliderReadout = wtext(text="5 V")
 
 # Adjust charge Q
 scene.append_to_caption("\n\n")

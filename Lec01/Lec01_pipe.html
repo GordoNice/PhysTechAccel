@@ -1,0 +1,461 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.1.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.1.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+
+    var version, display, vector, print, arange, __name__, type, scene, ρσ_ls, pipe, dt, _GS_1, particle, BfieldSlider, BfieldSliderReadout, EfieldSlider, EfieldSliderReadout, QSlider, QSliderReadout, MSlider, MSliderReadout, thetaSlider, thetaSliderReadout, phiSlider, phiSliderReadout;
+    version = ρσ_list_decorate([ "3.1", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    display = canvas;
+    vector = vec;
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    scene = canvas();
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "4";
+    scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 1400, height: 600, caption: "Movement of particle in electromagnetic field"})]);
+    "10";
+    pipe = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), axis: vector(200, 0, 0), opacity: .1, radius: 100})]);
+    "13";
+    dt = .001;
+    "17";
+    function Particle() {;
+    }
+    Particle.prototype.__init__ = async function __init__() {
+        var self = this;
+        "21";
+        self.position = vector(pipe.pos.x["+"](10), pipe.pos.y, pipe.pos.z);
+        "22";
+        self.moving = false;
+        "23";
+        self.theta = 0;
+        "24";
+        self.phi = 0;
+        "26";
+        self.q = .5;
+        "27";
+        self.m = 1;
+        "28";
+        self.v_mag = 10;
+        "29";
+        self.e_mag = 0;
+        "30";
+        self.b_mag = 0;
+        "33";
+        self.v_vec = vector(self.v_mag["*"](cos(self.theta)), self.v_mag["*"](sin(self.theta))["*"](sin(self.phi)), self.v_mag["*"](sin(self.theta))["*"](cos(self.phi)));
+        "37";
+        self.b_vec = vector(self.b_mag["-u"](), 0, 0);
+        "38";
+        self.e_vec = vector(self.e_mag, 0, 0);
+        "39";
+        self.a = vector(0, 0, 0);
+        "41";
+        self.body = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: self.position, color: color.blue, radius: 2, make_trail: true, trail_type: "curve"})]);
+        "46";
+        self.v_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: self.body.pos, axis: self.v_vec, shaftwidth: .4, color: color.yellow, opacity: .6})]);
+        "49";
+        self.b_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: self.body.pos, axis: self.b_vec, shaftwidth: .4, color: color.cyan, opacity: .6})]);
+        "52";
+        self.e_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: self.body.pos, axis: self.q["*"](self.e_vec), shaftwidth: .4, color: color.orange, opacity: .6})]);
+        "55";
+        self.f_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: self.body.pos, axis: cross(self.v_vec, self.b_vec), shaftwidth: .4, color: color.white, opacity: .6})]);
+    };
+    if (!Particle.prototype.__init__.__module__) Object.defineProperties(Particle.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Particle.__argnames__ = Particle.prototype.__init__.__argnames__;
+    Particle.__handles_kwarg_interpolation__ = Particle.prototype.__init__.__handles_kwarg_interpolation__;
+    Particle.prototype.move = async function move() {
+        var self = this;
+        var ρσ_ls, vec;
+        "61";
+        self.a = self.q["*"](self.e_vec["+"](cross(self.v_vec, self.b_vec)));
+        "62";
+        self.a=self.a["/"](self.m);
+        "64";
+        self.v_vec=self.v_vec["+"](self.a["*"](dt));
+        "65";
+        self.v_arrow.axis = self.v_vec;
+        "67";
+        self.f_arrow.axis = self.a;
+        "70";
+        self.body.pos=self.body.pos["+"](self.v_vec["*"](dt));
+        "71";
+        var ρσ_Iter1 = ρσ_list_decorate([ self.v_arrow, self.b_arrow, self.e_arrow, self.f_arrow ]);
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            vec = ρσ_Index1;
+            "72";
+            vec.pos = self.body.pos;
+        }
+    };
+    if (!Particle.prototype.move.__module__) Object.defineProperties(Particle.prototype.move, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.reset = async function reset() {
+        var self = this;
+        var ρσ_ls, vec;
+        "75";
+        self.body.pos = self.position;
+        "76";
+        self.v_vec = vector(self.v_mag["*"](cos(self.theta)), self.v_mag["*"](sin(self.theta))["*"](sin(self.phi)), self.v_mag["*"](sin(self.theta))["*"](cos(self.phi)));
+        "80";
+        (await self.body.clear_trail());
+        "81";
+        self.a = vector(0, 0, 0);
+        "83";
+        var ρσ_Iter2 = ρσ_list_decorate([ self.v_arrow, self.b_arrow, self.e_arrow, self.f_arrow ]);
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            vec = ρσ_Index2;
+            "84";
+            vec.pos = self.body.pos;
+        }
+        "86";
+        self.v_arrow.axis = self.v_vec;
+        "87";
+        self.b_arrow.axis = self.b_vec;
+    };
+    if (!Particle.prototype.reset.__module__) Object.defineProperties(Particle.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.check_collision = async function check_collision() {
+        var self = this;
+        "90";
+        if (sqrt(pow(self.body.pos.z, 2)["+"](pow(self.body.pos.y, 2)))["<"](pipe.radius) && pipe.length[">"](ρσ_cond_temp = self.body.pos.x) && ρσ_cond_temp[">"](0)) {
+            "93";
+            return true;
+            "94";
+        } else {
+            "95";
+            return false;
+        }
+    };
+    if (!Particle.prototype.check_collision.__module__) Object.defineProperties(Particle.prototype.check_collision, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Particle.prototype.__str__ = async function __str__() {
+        return (await this.__repr__());
+    };
+    Object.defineProperty(Particle.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "98";
+    async function to_start() {
+        "99";
+        particle.moving = false;
+        "100";
+        (await particle.reset());
+    };
+    if (!to_start.__module__) Object.defineProperties(to_start, {
+        __module__ : {value: null}
+    });
+
+    "103";
+    async function launch() {
+        "104";
+        particle.moving = true;
+        "105";
+        while ((await particle.check_collision()) && particle.moving) {
+            "106";
+            (await rate(1["/"](dt)));
+            "107";
+            (await particle.move());
+        }
+    };
+    if (!launch.__module__) Object.defineProperties(launch, {
+        __module__ : {value: null}
+    });
+
+    "110";
+    async function stop() {
+        "111";
+        particle.moving = false;
+    };
+    if (!stop.__module__) Object.defineProperties(stop, {
+        __module__ : {value: null}
+    });
+
+    "114";
+    async function showVectors() {
+        var ρσ_ls, vec;
+        "115";
+        var ρσ_Iter3 = ρσ_list_decorate([ particle.v_arrow, particle.b_arrow, particle.e_arrow, particle.f_arrow ]);
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            vec = ρσ_Index3;
+            "118";
+            if ((vec.opacity !== 0 && (typeof vec.opacity !== "object" || ρσ_not_equals(vec.opacity, 0)))) {
+                "119";
+                vec.opacity = 0;
+                "120";
+            } else {
+                "121";
+                vec.opacity = .7;
+            }
+        }
+    };
+    if (!showVectors.__module__) Object.defineProperties(showVectors, {
+        __module__ : {value: null}
+    });
+
+    "124";
+    async function adjustBfield() {
+        "125";
+        particle.b_mag = BfieldSlider.value;
+        "126";
+        particle.b_vec = vector(BfieldSlider.value["-u"](), 0, 0);
+        "127";
+        particle.b_arrow.axis = particle.b_vec;
+        "128";
+        BfieldSliderReadout.text = ""["+"](ρσ_str.format("{}", BfieldSlider.value))["+"](" Tesla");
+        "130";
+        particle.a = particle.q["*"](particle.e_vec["+"](cross(particle.v_vec, particle.b_vec)));
+        "132";
+        particle.a=particle.a["/"](particle.m);
+        "133";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustBfield.__module__) Object.defineProperties(adjustBfield, {
+        __module__ : {value: null}
+    });
+
+    "136";
+    async function adjustEfield() {
+        "137";
+        particle.e_mag = EfieldSlider.value;
+        "138";
+        particle.e_vec = vector(EfieldSlider.value, 0, 0);
+        "139";
+        particle.e_arrow.axis = particle.q["*"](particle.e_vec);
+        "140";
+        EfieldSliderReadout.text = ""["+"](ρσ_str.format("{}", EfieldSlider.value))["+"](" V");
+        "143";
+        particle.a = particle.e_arrow.axis["+"](particle.q["*"](cross(particle.v_vec, particle.b_vec)));
+        "145";
+        particle.a=particle.a["/"](particle.m);
+        "146";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustEfield.__module__) Object.defineProperties(adjustEfield, {
+        __module__ : {value: null}
+    });
+
+    "149";
+    async function adjustQ() {
+        "150";
+        particle.q = QSlider.value;
+        "151";
+        particle.e_arrow.axis = particle.q["*"](particle.e_vec);
+        "152";
+        QSliderReadout.text = ""["+"](ρσ_str.format("{}", QSlider.value))["+"](" Coulumbs");
+        "154";
+        particle.a = particle.q["*"](particle.e_vec["+"](cross(particle.v_vec, particle.b_vec)));
+        "156";
+        particle.a=particle.a["/"](particle.m);
+        "157";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustQ.__module__) Object.defineProperties(adjustQ, {
+        __module__ : {value: null}
+    });
+
+    "160";
+    async function adjustM() {
+        "161";
+        particle.m = MSlider.value;
+        "162";
+        MSliderReadout.text = ""["+"](ρσ_str.format("{}", MSlider.value))["+"](" units");
+        "163";
+        particle.body.radius = 2["*"](particle.m);
+        "165";
+        particle.a = particle.q["*"](particle.e_vec["+"](cross(particle.v_vec, particle.b_vec)));
+        "167";
+        particle.a=particle.a["/"](particle.m);
+        "168";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustM.__module__) Object.defineProperties(adjustM, {
+        __module__ : {value: null}
+    });
+
+    "171";
+    async function adjustPhi() {
+        "172";
+        particle.phi = phiSlider.value["*"](pi)["/"](180);
+        "173";
+        particle.v_vec = vector(particle.v_mag["*"](cos(particle.theta)), particle.v_mag["*"](sin(particle.theta))["*"](sin(particle.phi)), particle.v_mag["*"](sin(particle.theta))["*"](cos(particle.phi)));
+        "177";
+        particle.v_arrow.axis = particle.v_vec;
+        "178";
+        phiSliderReadout.text = ""["+"](ρσ_str.format("{}", phiSlider.value))["+"](" degrees");
+        "180";
+        particle.a = particle.q["*"](particle.e_vec["+"](cross(particle.v_vec, particle.b_vec)));
+        "182";
+        particle.a=particle.a["/"](particle.m);
+        "183";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustPhi.__module__) Object.defineProperties(adjustPhi, {
+        __module__ : {value: null}
+    });
+
+    "186";
+    async function adjustTheta() {
+        var ρσ_ls, theta;
+        "187";
+        theta = thetaSlider.value["*"](pi)["/"](180);
+        "188";
+        particle.theta = theta;
+        "189";
+        particle.v_vec = vector(particle.v_mag["*"](cos(particle.theta)), particle.v_mag["*"](sin(particle.theta))["*"](sin(particle.phi)), particle.v_mag["*"](sin(particle.theta))["*"](cos(particle.phi)));
+        "193";
+        particle.v_arrow.axis = particle.v_vec;
+        "194";
+        thetaSliderReadout.text = ""["+"](ρσ_str.format("{}", thetaSlider.value))["+"](" degrees");
+        "196";
+        particle.a = particle.q["*"](particle.e_vec["+"](cross(particle.v_vec, particle.b_vec)));
+        "198";
+        particle.a=particle.a["/"](particle.m);
+        "199";
+        particle.f_arrow.axis = particle.a;
+    };
+    if (!adjustTheta.__module__) Object.defineProperties(adjustTheta, {
+        __module__ : {value: null}
+    });
+
+    "202";
+    _GS_1 = new Particle;
+    (await _GS_1.__init__());
+    particle = _GS_1;
+    "205";
+    scene.camera.pos = vector(7.6, .5, 67);
+    "206";
+    scene.camera.axis = vector(0, 0, 67["-u"]());
+    "207";
+    scene.camera.follow(particle.body);
+    "209";
+    scene.append_to_caption("\n\n");
+    "210";
+    ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "To start", bind: to_start})]);
+    "211";
+    ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Launch!", bind: launch})]);
+    "212";
+    ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Stop!", bind: stop})]);
+    "213";
+    ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Show Vectors", bind: showVectors})]);
+    "215";
+    scene.append_to_caption("\n\n");
+    "216";
+    BfieldSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 20, step: .5, value: 0, bind: adjustBfield})]);
+    "218";
+    scene.append_to_caption(" B-field Strength = ");
+    "219";
+    BfieldSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", BfieldSlider.value))["+"](" Tesla")})]);
+    "221";
+    scene.append_to_caption("\n\n");
+    "222";
+    EfieldSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 50["-u"](), max: 50, step: 1, value: 0, bind: adjustEfield})]);
+    "224";
+    scene.append_to_caption(" E-field Strength = ");
+    "225";
+    EfieldSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", EfieldSlider.value))["+"](" V")})]);
+    "228";
+    scene.append_to_caption("\n\n");
+    "229";
+    QSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .1, value: .5, bind: adjustQ})]);
+    "231";
+    scene.append_to_caption(" Q = ");
+    "232";
+    QSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", QSlider.value))["+"](" Coulumbs")})]);
+    "235";
+    scene.append_to_caption("\n\n");
+    "236";
+    MSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 1, step: .1, value: 1, bind: adjustM})]);
+    "238";
+    scene.append_to_caption(" M = ");
+    "239";
+    MSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", MSlider.value))["+"](" units")})]);
+    "242";
+    scene.append_to_caption("\n\n");
+    "243";
+    thetaSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 180, step: 30, value: 0, bind: adjustTheta})]);
+    "245";
+    scene.append_to_caption(" Theta angle = ");
+    "246";
+    thetaSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", thetaSlider.value))["+"](" degrees")})]);
+    "249";
+    scene.append_to_caption("\n\n");
+    "250";
+    phiSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 360, step: 30, value: 0, bind: adjustPhi})]);
+    "252";
+    scene.append_to_caption(" Phi angle = ");
+    "253";
+    phiSliderReadout = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: ""["+"](ρσ_str.format("{}", phiSlider.value))["+"](" degrees")})]);
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
