@@ -129,7 +129,7 @@ class Particle:
 
     def check_collision(self):  # checks for boundaries
         if sqrt(
-                pow(self.body.pos.z, 2) + pow(self.body.pos.y, 2)) < pipe.radius \
+            pow(self.body.pos.z, 2) + pow(self.body.pos.y, 2)) < pipe.radius \
                 and pipe.length > self.body.pos.x > 0:
             return True
         else:
