@@ -9,12 +9,12 @@
 # GlowScript 3.1 VPython
 
 # import vpython as vp
-from vpython import canvas, vector, rate, cos, sin, arrow,\
+from vpython import canvas, vector, rate, cos, sin, arrow, label,\
     color, cross, slider, button, sphere, wtext, pi, cylinder, pow, sqrt
 
 # Create scene
 scene = canvas(
-    width=1400, height=600,
+    width=800, height=400,
     caption="Movement of particle in electromagnetic field")
 
 
@@ -68,6 +68,31 @@ class Particle:
             pos=self.body.pos, axis=cross(self.v_vec, self.b_vec),
             shaftwidth=0.4, color=color.white, opacity=0.6)
 
+        self.v_arrow.label = label(
+            pos=self.v_arrow.pos+self.v_arrow.axis,
+            text='Velocity', xoffset=20,
+            yoffset=50, space=5,
+            height=16, border=4,
+            font='sans', color=self.v_arrow.color)
+        self.b_arrow.label = label(
+            pos=self.b_arrow.pos+self.b_arrow.axis,
+            text='Magnetic', xoffset=20,
+            yoffset=50, space=5,
+            height=16, border=4,
+            font='sans', color=self.b_arrow.color)
+        self.e_arrow.label = label(
+            pos=self.e_arrow.pos+self.e_arrow.axis,
+            text='Electric', xoffset=20,
+            yoffset=50, space=5,
+            height=16, border=4,
+            font='sans', color=self.e_arrow.color)
+        self.f_arrow.label = label(
+            pos=self.f_arrow.pos+self.f_arrow.axis,
+            text='EM force', xoffset=20,
+            yoffset=50, space=5,
+            height=16, border=4,
+            font='sans', color=self.f_arrow.color)
+
     def move(self):  # moves proton by small step dx
         # electric + magnetic field forces F = ma = q (E + v x B)
         self.a = self.q * (self.e_vec + cross(self.v_vec, self.b_vec))
@@ -82,6 +107,9 @@ class Particle:
         self.body.pos += self.v_vec * dt
         for vec in [self.v_arrow, self.b_arrow, self.e_arrow, self.f_arrow]:
             vec.pos = self.body.pos
+            vec.label.pos = vec.pos + vec.axis
+
+        # for vec in []
 
     def reset(self):  # resets particle position and path
         self.body.pos = self.position
@@ -94,6 +122,7 @@ class Particle:
 
         for vec in [self.v_arrow, self.b_arrow, self.e_arrow, self.f_arrow]:
             vec.pos = self.body.pos
+            vec.label.pos = vec.pos + vec.axis
 
         self.v_arrow.axis = self.v_vec
         self.b_arrow.axis = self.b_vec
@@ -133,22 +162,35 @@ def showVectors():
             vec.opacity = 0.7
 
 
+def showLabels():
+    for vec in [
+            particle.v_arrow,
+            particle.b_arrow, particle.e_arrow, particle.f_arrow]:
+        if vec.label.visible:
+            vec.label.visible = False
+        else:
+            vec.label.visible = True
+
+
 def adjustBfield():
     particle.b_mag = BfieldSlider.value
     particle.b_vec = vector(-BfieldSlider.value, 0, 0)  # B directed downwards
     particle.b_arrow.axis = particle.b_vec
+    particle.b_arrow.label.pos = particle.b_arrow.pos + particle.b_arrow.axis
     BfieldSliderReadout.text = f"{BfieldSlider.value} Tesla"
 
     particle.a = particle.q * (
             particle.e_vec + cross(particle.v_vec, particle.b_vec))
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 def adjustEfield():
     particle.e_mag = EfieldSlider.value
     particle.e_vec = vector(EfieldSlider.value, 0, 0)
     particle.e_arrow.axis = particle.q * particle.e_vec
+    particle.e_arrow.label.pos = particle.e_arrow.pos + particle.e_arrow.axis
     EfieldSliderReadout.text = f"{EfieldSlider.value} V"
 
     particle.a = \
@@ -156,17 +198,20 @@ def adjustEfield():
             particle.v_vec, particle.b_vec)
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 def adjustQ():
     particle.q = QSlider.value
     particle.e_arrow.axis = particle.q * particle.e_vec
+    particle.e_arrow.label.pos = particle.e_arrow.pos + particle.e_arrow.axis
     QSliderReadout.text = f"{QSlider.value} Coulumbs"
 
     particle.a = particle.q * (
             particle.e_vec + cross(particle.v_vec, particle.b_vec))
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 def adjustM():
@@ -178,6 +223,7 @@ def adjustM():
             particle.e_vec + cross(particle.v_vec, particle.b_vec))
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 def adjustPhi():
@@ -187,12 +233,14 @@ def adjustPhi():
         particle.v_mag * sin(particle.theta) * sin(particle.phi),
         particle.v_mag * sin(particle.theta) * cos(particle.phi))
     particle.v_arrow.axis = particle.v_vec
+    particle.v_arrow.label.pos = particle.v_arrow.pos + particle.v_arrow.axis
     phiSliderReadout.text = f"{phiSlider.value} degrees"
 
     particle.a = particle.q * (
             particle.e_vec + cross(particle.v_vec, particle.b_vec))
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 def adjustTheta():
@@ -203,12 +251,14 @@ def adjustTheta():
         particle.v_mag * sin(particle.theta) * sin(particle.phi),
         particle.v_mag * sin(particle.theta) * cos(particle.phi))
     particle.v_arrow.axis = particle.v_vec
+    particle.v_arrow.label.pos = particle.v_arrow.pos + particle.v_arrow.axis
     thetaSliderReadout.text = f"{thetaSlider.value} degrees"
 
     particle.a = particle.q * (
             particle.e_vec + cross(particle.v_vec, particle.b_vec))
     particle.a /= particle.m
     particle.f_arrow.axis = particle.a
+    particle.f_arrow.label.pos = particle.f_arrow.pos + particle.f_arrow.axis
 
 
 particle = Particle()  # creates the 'particle' object
@@ -223,31 +273,32 @@ button(text="To start", bind=to_start)  # link the button and function
 button(text="Launch!", bind=launch)  # link the button and function
 button(text="Stop!", bind=stop)  # link the button and function
 button(text="Show Vectors", bind=showVectors)  # link the button and function
+button(text="Show Labels", bind=showLabels)  # link the button and function
 
 scene.append_to_caption("\n\n")  # newlines for aesthetics
 BfieldSlider = slider(
     min=0, max=20, step=0.5, value=0, bind=adjustBfield)
-scene.append_to_caption(" B-field Strength = ")
+scene.append_to_caption(" B-field (magnetic) Strength = ")
 BfieldSliderReadout = wtext(text=f"{BfieldSlider.value} Tesla")
 
 scene.append_to_caption("\n\n")  # newlines for aesthetics
 EfieldSlider = slider(
     min=-50, max=50, step=1, value=0, bind=adjustEfield)
-scene.append_to_caption(" E-field Strength = ")
+scene.append_to_caption(" E-field (electric) Strength = ")
 EfieldSliderReadout = wtext(text=f"{EfieldSlider.value} V")
 
 # Adjust charge Q
 scene.append_to_caption("\n\n")
 QSlider = slider(
     min=0, max=1, step=0.1, value=0.5, bind=adjustQ)
-scene.append_to_caption(" Q = ")
+scene.append_to_caption(" Q (charge) = ")
 QSliderReadout = wtext(text=f"{QSlider.value} Coulumbs")
 
 # Adjust mass M
 scene.append_to_caption("\n\n")
 MSlider = slider(
     min=0.1, max=1, step=0.1, value=1, bind=adjustM)
-scene.append_to_caption(" M = ")
+scene.append_to_caption(" M (mass) = ")
 MSliderReadout = wtext(text=f"{MSlider.value} units")
 
 # Adjust angle theta
